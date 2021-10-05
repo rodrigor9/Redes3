@@ -1,4 +1,3 @@
-from os import name, system
 from inicio import *
 from crearPDF import *
 from updateRRD import update
