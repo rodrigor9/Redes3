@@ -42,7 +42,8 @@ def obtenerSO(agente):
 
     ticks = consultaSNMP(agente.comunidad,agente.host,"1.3.6.1.2.1.1.3.0",agente.puerto,agente.version)
     seconds = int(ticks)/100
-    agente.tiempoActividad = str(datetime.timedelta(seconds=seconds))
+    tiempo = str(datetime.timedelta(seconds=seconds))
+    agente.tiempoActividad = tiempo[:tiempo.find(".")]
 
 def asignarNumeroDeInterfaces(agentes):
     for agente in agentes:

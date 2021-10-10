@@ -1,6 +1,6 @@
 from datetime import time
 from io import open
-from CreateRRD import crearRRD
+from CreateRRD import *
 from inicio import *
 import os
 
@@ -77,6 +77,9 @@ def obtenerAgentes():
         os.system("mkdir datosGenerados/agente_"+data[0])
         if not os.path.exists("datosGenerados/agente_"+data[0]+"/RRDagente_"+data[0]+".rrd"):
             crearRRD(data[0])
+        if not os.path.exists("datosGenerados/agente_"+data[0]+"/RRDagenteTrend_"+data[0]+".rrd"):
+            trendCreate(data[0])
+
 
 
     if estadoConectividadAgentes(agentes):
@@ -109,6 +112,8 @@ def agregarAgente(agente: Agente, agentes):
     os.system("mkdir datosGenerados/agente_"+agente.host)
     if not os.path.exists("datosGenerados/agente_"+agente.host+"/RRDagente_"+agente.host+".rrd"):
         crearRRD(agente.host)
+    if not os.path.exists("datosGenerados/agente_"+agente.host+"/RRDagenteTrend_"+agente.host+".rrd"):
+        trendCreate(agente.host)
 
     if ping(agente.host) == 0:
         os.system("clear")  

@@ -1,7 +1,8 @@
 from inicio import *
 from rendimiento import *
+from os import system
 from crearPDF import *
-from updateRRD import update
+from updateRRD import *
 from graphRRD import grafica
 from claseAgente import Agente, obtenerAgentes, eliminarAgente, mostrarAgentes, agregarAgente
 import threading
@@ -17,12 +18,16 @@ mostrarAgentes(agentes)
 
 i=0
 for agente in agentes:
-    print(f"Interfaces agente {i+1}\n{agente.tablaInterfaces}")
+    """ print(f"Interfaces agente {i+1}\n{agente.tablaInterfaces}")
     interfaz = int(input("Selecciona la interfaz a monitorizar: "))
     agente.interfazSelec = interfaz
-    """ t = threading.Thread(name="Hilo "+str(i+1),target=update, args=(agente,interfaz), daemon=True)
+    t = threading.Thread(name="Hilo "+str(i+1),target=update, args=(agente,interfaz), daemon=True)
     t.start() """
+    t = threading.Thread(name="Hilo "+str(i+1),target=trendUpdate, args=(agente,), daemon=True)
+    t.start()
     i = i+1
+
+
 while True:
     opcion = 0
     opcion = int(input(
@@ -66,15 +71,12 @@ while True:
         mostrarAgentes(agentes)
 
     elif opcion == 5:
-        i=0
-        print("Seleccione un agente a monitorizar:")
+        system("clear")
+        print("""Inventario de la configuracion
+        """)
         for agente in agentes:
-            print(f"Agente {i+1}: {agente.desc}")
-            i = i+1
-        op = int(input())
-        agente = agentes[op-1]
-        mostrarAcuerdo(agente)
-        tablaInventario(agente)
+            mostrarAcuerdo(agente)
+            tablaInventario(agente)
     else:
         print("El programa finalizo")
         exit(0)

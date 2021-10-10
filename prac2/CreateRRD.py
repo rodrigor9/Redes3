@@ -16,3 +16,14 @@ def crearRRD(host:str):
 
     if ret:
         print (rrdtool.error())
+
+def trendCreate(host: str):
+    ret = rrdtool.create("datosGenerados/agente_"+host+"/RRDagenteTrend_"+host+".rrd",
+                     "--start",'N',
+                     "--step",'60',
+                     "DS:CPUload:GAUGE:600:U:U",
+                     "DS:RAMload:GAUGE:600:U:U",
+                     "DS:HDDload:GAUGE:600:U:U",
+                     "RRA:AVERAGE:0.5:1:24")
+    if ret:
+        print (rrdtool.error())

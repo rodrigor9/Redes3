@@ -3,6 +3,7 @@ from claseAgente import Agente
 from getSNMP import consultaSNMP
 import datetime as dt
 
+
 def mostrarAcuerdo(agente: Agente):
     a_file = open("acuerdo.txt", "r")
     list_of_lines = a_file.readlines()
@@ -29,7 +30,7 @@ def tablaInventario(agente: Agente):
     quinta = "Comunidad SNMP"
     
     columnas = [primera,segunda,tercera,cuarta,quinta]
-    contenido = [str(nombre),str(agente.so),str(agente.tiempoActividad),str(dt.date.today()),str(agente.comunidad)]
+    contenido = [str(nombre),str(agente.so),str(agente.tiempoActividad),str(dt.datetime.today())[:19],str(agente.comunidad)]
     
     for i in range(5):
         if len(columnas[i]) >= len(contenido[i]):
