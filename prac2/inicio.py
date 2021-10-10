@@ -1,3 +1,4 @@
+import datetime
 from getSNMP import consultaSNMP
 from datetime import date
 import os
@@ -39,8 +40,9 @@ def obtenerSO(agente):
     resultados = consultaSNMP(agente.comunidad,agente.host,"1.3.6.1.2.1.1.6.0",agente.puerto,agente.version)
     agente.ubicacion = resultados
 
-    resultados = consultaSNMP(agente.comunidad,agente.host,"1.3.6.1.2.1.1.3.0",agente.puerto,agente.version)
-    agente.tiempoActividad = int(resultados)
+    ticks = consultaSNMP(agente.comunidad,agente.host,"1.3.6.1.2.1.1.3.0",agente.puerto,agente.version)
+    seconds = int(ticks)/100
+    agente.tiempoActividad = str(datetime.timedelta(seconds=seconds))
 
 def asignarNumeroDeInterfaces(agentes):
     for agente in agentes:

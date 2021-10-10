@@ -3,7 +3,6 @@ import pathlib
 
 from jinja2 import Template
 from xhtml2pdf import pisa
-from xhtml2pdf.tags import listDecimal
 
 from claseAgente import Agente
 
