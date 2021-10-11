@@ -1,3 +1,4 @@
+import threading
 from claseAgente import Agente
 import time
 import rrdtool
@@ -48,7 +49,6 @@ def update(agente: Agente, interfaz: int):
 def trendUpdate(agente: Agente):
     logging.info("Monitorizando para el host " + agente.host)
     rrdpath = "datosGenerados/agente_"+agente.host
-    print(rrdpath)
     carga_CPU = 0
     carga_RAM = 0
     carga_HDD = 0
@@ -56,11 +56,13 @@ def trendUpdate(agente: Agente):
 
     if "Windows" in agente.desc:
         oidCPU = "1.3.6.1.2.1.25.3.3.1.2.4"
-        print("Entro aqui")
     else:
         oidCPU = "1.3.6.1.2.1.25.3.3.1.2.196608"
-    
-    while 1:
+
+    inicial = time.time()
+    limite = time.time() + 300
+
+    while inicial<= limite:
         carga_CPU = int(consultaSNMP(agente.comunidad, agente.host,
                                         oidCPU, agente.puerto, agente.version))
         carga_RAM = calculoCargaRamWindows(agente) if "Windows" in agente.desc else calculoCargaRamLinux(agente)
@@ -72,6 +74,9 @@ def trendUpdate(agente: Agente):
         rrdtool.dump(rrdpath+"/RRDagenteTrend_"+agente.host +
                         ".rrd", rrdpath+"/RRDagenteTrend_"+agente.host+".xml")
         time.sleep(1)
+        inicial = time.time()
+    
+    print("Finalizo el "+str(threading.current_thread().getName()))
 
 def calculoCargaRamWindows(agente: Agente):
     """ unidadEnBytes = int(consultaSNMP(agente.comunidad, agente.host,
@@ -88,9 +93,8 @@ def calculoCargaRamWindows(agente: Agente):
 def calculoCargaRamLinux(agente: Agente):
     memTotalReal = int(consultaSNMP(agente.comunidad, agente.host,
                                      "1.3.6.1.4.1.2021.4.5.0", agente.puerto, agente.version)) # En kB's
-    memTotalFree = int(consultaSNMP(agente.comunidad, agente.host,
-                                     "1.3.6.1.4.1.2021.4.11.0", agente.puerto, agente.version)) # En kB's
+    memUsed = int(consultaSNMP(agente.comunidad, agente.host,
+                                     "1.3.6.1.4.1.2021.4.6.0", agente.puerto, agente.version)) # En kB's
 
-    memUsed = memTotalReal-memTotalFree #En kB's
     cargaRAM = memUsed*100/memTotalReal
     return cargaRAM

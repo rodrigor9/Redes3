@@ -3,7 +3,7 @@ from rendimiento import *
 from os import system
 from crearPDF import *
 from updateRRD import *
-from graphRRD import grafica
+from graphRRD import grafica, trendGraph, trendRAMGraph
 from claseAgente import Agente, obtenerAgentes, eliminarAgente, mostrarAgentes, agregarAgente
 import threading
 
@@ -23,8 +23,8 @@ for agente in agentes:
     agente.interfazSelec = interfaz
     t = threading.Thread(name="Hilo "+str(i+1),target=update, args=(agente,interfaz), daemon=True)
     t.start() """
-    t = threading.Thread(name="Hilo "+str(i+1),target=trendUpdate, args=(agente,), daemon=True)
-    t.start()
+    """ t = threading.Thread(name="Hilo "+str(i+1),target=trendUpdate, args=(agente,), daemon=True)
+    t.start() """
     i = i+1
 
 
@@ -75,8 +75,10 @@ while True:
         print("""Inventario de la configuracion
         """)
         for agente in agentes:
-            mostrarAcuerdo(agente)
-            tablaInventario(agente)
+            #mostrarAcuerdo(agente)
+            #tablaInventario(agente)
+            trendGraph(agente)
+            #trendRAMGraph(agente)
     else:
         print("El programa finalizo")
         exit(0)

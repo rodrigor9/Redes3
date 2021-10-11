@@ -1,6 +1,129 @@
+import datetime
 from claseAgente import Agente
 import rrdtool
 import time
+
+def trendRAMGraph(agente: Agente):
+    rrdpath = "datosGenerados/agente_"+agente.host+"/RRDagenteTrend_"+agente.host+".rrd"
+    imgpath = "datosGenerados/agente_"+agente.host+"/"
+
+    ultima_lectura = int(rrdtool.last(rrdpath))
+    tiempo_final = ultima_lectura
+    tiempo_inicial = tiempo_final - 600
+
+    ret = rrdtool.graphv( imgpath+"deteccionRAM.png",
+                        "--start",str(tiempo_inicial),
+                        "--end",str(tiempo_final),
+                        "--vertical-label=RAM load",
+                        '--lower-limit', '0',
+                        '--upper-limit', '100',
+                        "--title=Uso de la RAM del host "+agente.host+"\n Detección de umbrales",
+
+                        "DEF:cargaRAM="+rrdpath+":RAMload:AVERAGE",
+
+                        "VDEF:cargaMAX=cargaRAM,MAXIMUM",
+                        "VDEF:cargaMIN=cargaRAM,MINIMUM",
+                        "VDEF:cargaSTDEV=cargaRAM,STDEV",
+                        "VDEF:cargaLAST=cargaRAM,LAST",
+
+                        "CDEF:umbral15=cargaRAM,15,LT,0,cargaRAM,IF",
+                        "CDEF:umbral60=cargaRAM,60,LT,0,cargaRAM,IF",
+                        "CDEF:umbral80=cargaRAM,80,LT,0,cargaRAM,IF",
+
+                        "AREA:cargaRAM#0000FF:Carga de la RAM",
+                        "AREA:umbral15#CCFFCC:Carga RAM mayor que 15%",
+                        "AREA:umbral60#FFE0B3:Carga RAM mayor que 60%",
+                        "AREA:umbral80#FFB3B3:Carga RAM mayor que 80%",
+                        "HRULE:15#00FF00:Umbral 1 - 15%",
+                        "HRULE:60#FF9900:Umbral 16 - 60%",
+                        "HRULE:80#FF0000:Umbral 61 - 80%",
+                        
+                        "PRINT:cargaMAX:%0.2lf",
+                        "PRINT:cargaMAX:%Y %m %d %H %M:strftime",
+                        "GPRINT:cargaMIN:%6.2lf %SMIN",
+                        "GPRINT:cargaMAX:%6.2lf %SMAX",
+                        "GPRINT:cargaSTDEV:%6.2lf %SSTDEV",
+                        "GPRINT:cargaLAST:%6.2lf %SLAST" )
+
+
+    valor = ret["print[0]"]
+    tiempo = ret["print[1]"].replace(" ","-",2)
+    tiempo = tiempo.split(sep=" ",maxsplit=1)
+    tiempo[1] = tiempo[1].replace(" ",":")
+    tiempo = " ".join(tiempo)
+    
+    print(f"Valor: {valor}\nTiempo: {tiempo}")
+    valor = float(ret['print[0]'])
+    if valor > 15:
+        print("Ready")
+    if valor > 60:
+        print("Set")
+    if valor > 80:
+        print("Go")
+
+def trendGraph(agente: Agente):
+    rrdpath = "datosGenerados/agente_"+agente.host+"/RRDagenteTrend_"+agente.host+".rrd"
+    imgpath = "datosGenerados/agente_"+agente.host+"/"
+
+    """ fecha = str(datetime.datetime.today())
+    fecha = time.strptime(fecha[:16], "%Y-%m-%d %H:%M")
+    fecha = int(time.mktime(fecha)) #Fecha en timestamp """
+
+
+    ultima_lectura = int(rrdtool.last(rrdpath))
+    tiempo_final = ultima_lectura
+    tiempo_inicial = tiempo_final - 600
+
+    ret = rrdtool.graphv( imgpath+"deteccionCPU.png",
+                        "--start",str(tiempo_inicial),
+                        "--end",str(tiempo_final),
+                        "--vertical-label=Cpu load",
+                        '--lower-limit', '0',
+                        '--upper-limit', '100',
+                        "--title=Uso del CPU del host "+agente.host+"\n Detección de umbrales",
+
+                        "DEF:cargaCPU="+rrdpath+":CPUload:AVERAGE",
+
+                        "VDEF:cargaMAX=cargaCPU,MAXIMUM",
+                        "VDEF:cargaMIN=cargaCPU,MINIMUM",
+                        "VDEF:cargaSTDEV=cargaCPU,STDEV",
+                        "VDEF:cargaLAST=cargaCPU,LAST",
+
+                        "CDEF:umbral15=cargaCPU,15,LT,0,cargaCPU,IF",
+                        "CDEF:umbral60=cargaCPU,60,LT,0,cargaCPU,IF",
+                        "CDEF:umbral80=cargaCPU,80,LT,0,cargaCPU,IF",
+
+                        "AREA:cargaCPU#0000FF:Carga del CPU",
+                        "AREA:umbral15#CCFFCC:Carga CPU mayor que 15%",
+                        "AREA:umbral60#FFE0B3:Carga CPU mayor que 60%",
+                        "AREA:umbral80#FFB3B3:Carga CPU mayor que 80%",
+                        "HRULE:15#00FF00:Umbral 1 - 15%",
+                        "HRULE:60#FF9900:Umbral 16 - 60%",
+                        "HRULE:80#FF0000:Umbral 61 - 80%",
+                        
+                        "PRINT:cargaMAX:%0.2lf",
+                        "PRINT:cargaMAX:%Y %m %d %H %M:strftime",
+                        "GPRINT:cargaMIN:%6.2lf %SMIN",
+                        "GPRINT:cargaMAX:%6.2lf %SMAX",
+                        "GPRINT:cargaSTDEV:%6.2lf %SSTDEV",
+                        "GPRINT:cargaLAST:%6.2lf %SLAST" )
+
+
+    valor = ret["print[0]"]
+    tiempo = ret["print[1]"].replace(" ","-",2)
+    tiempo = tiempo.split(sep=" ",maxsplit=1)
+    tiempo[1] = tiempo[1].replace(" ",":")
+    tiempo = " ".join(tiempo)
+    
+    print(f"Valor: {valor}\nTiempo: {tiempo}")
+    valor = float(ret['print[0]'])
+    if valor > 15:
+        print("Ready")
+    if valor > 60:
+        print("Set")
+    if valor > 80:
+        print("Go")
+
 def grafica(agente: Agente, tiempoInicial, tiempoFinal, interfaz:int):
     #Grafica desde el tiempo actual menos diez minutos
 
@@ -52,3 +175,34 @@ def grafica(agente: Agente, tiempoInicial, tiempoFinal, interfaz:int):
                         "DEF:udpOutDatagrams="+nombre+".rrd:udpOutDatagrams:AVERAGE",
                         
                         "AREA:udpOutDatagrams#9400D3:Datagramas enviados.")
+
+
+
+
+
+""" import threading, time
+
+vmas_hilos=False
+def contar(segundos):
+    global vmas_hilos
+    inicial = time.time()
+    limite = inicial + segundos
+    while inicial<=limite:
+        inicial = time.time()
+    vmas_hilos = True
+    
+def accion():
+    global vmas_hilos
+    while not vmas_hilos:
+        print("Hola")
+    
+
+segundos = 300
+hilo = threading.Thread(name='contador',
+                            target=accion, 
+                            args=())
+hilo2 = threading.Thread(name='contador',
+                            target=contar, 
+                            args=(segundos,))
+hilo.start()
+hilo2.start() """
