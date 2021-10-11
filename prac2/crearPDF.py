@@ -20,7 +20,7 @@ def generaReporte(agente: Agente):
     carpetaImagenes = "datosGenerados/agente_"+agente.host
     base_dir = pathlib.Path().parent.absolute()
     sourceHtml = os.path.join(base_dir, 'index.html')
-    outputFilename = "reporte.pdf"
+    outputFilename = carpetaImagenes+"/reporte.pdf"
     lista = []
 
     archivos = os.listdir(os.path.join(base_dir, carpetaImagenes))

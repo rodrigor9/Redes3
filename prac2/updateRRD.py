@@ -1,4 +1,5 @@
 import threading
+from graphRRD import *
 from claseAgente import Agente
 import time
 import rrdtool
@@ -47,6 +48,12 @@ def update(agente: Agente, interfaz: int):
         time.sleep(1)
 
 def trendUpdate(agente: Agente):
+
+    lista = [True, True, True]
+    banderas={}
+    banderas["cpu"] = lista.copy()
+    banderas["ram"] = lista.copy()
+    banderas["hdd"] = lista.copy()
     logging.info("Monitorizando para el host " + agente.host)
     rrdpath = "datosGenerados/agente_"+agente.host
     carga_CPU = 0
@@ -74,6 +81,8 @@ def trendUpdate(agente: Agente):
         rrdtool.dump(rrdpath+"/RRDagenteTrend_"+agente.host +
                         ".rrd", rrdpath+"/RRDagenteTrend_"+agente.host+".xml")
         time.sleep(1)
+        trendGraph(agente,60,banderas["cpu"])
+        trendRAMGraph(agente,60,banderas["ram"])
         inicial = time.time()
     
     print("Finalizo el "+str(threading.current_thread().getName()))

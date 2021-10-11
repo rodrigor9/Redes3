@@ -16,18 +16,16 @@ INICIO
 """)
 mostrarAgentes(agentes)
 
-i=0
+""" i=0
 for agente in agentes:
-    """ print(f"Interfaces agente {i+1}\n{agente.tablaInterfaces}")
+    print(f"Interfaces agente {i+1}\n{agente.tablaInterfaces}")
     interfaz = int(input("Selecciona la interfaz a monitorizar: "))
     agente.interfazSelec = interfaz
     t = threading.Thread(name="Hilo "+str(i+1),target=update, args=(agente,interfaz), daemon=True)
-    t.start() """
-    #t = threading.Thread(name="Hilo "+str(i+1),target=trendUpdate, args=(agente,), daemon=True)
-    t2 = threading.Thread(name="Hilo "+str(i+1)+" Grafica",target=trendGraph, args=(agente,), daemon=True)
-    #t.start()
-    t2.start()
-    i = i+1
+    t.start()
+    t = threading.Thread(name="Hilo "+str(i+1),target=trendUpdate, args=(agente,), daemon=True)
+    t.start()
+    i = i+1 """
 
 
 while True:
@@ -74,13 +72,27 @@ while True:
 
     elif opcion == 5:
         system("clear")
+        
+        i=0
+        threads =[]
+        """ for agente in agentes:
+            mostrarAcuerdo(agente)
+
+        for agente in agentes:
+            t = threading.Thread(name="Hilo "+str(i+1),target=trendUpdate, args=(agente,), daemon=True)
+            threads.append(t)
+            t.start()
+            i = i+1
+        for i in range(len(threads)):
+            threads[i].join() """
         print("""Inventario de la configuracion
         """)
-        #for agente in agentes:
-            #mostrarAcuerdo(agente)
-            #tablaInventario(agente)
-            #trendGraph(agente)
-            #trendRAMGraph(agente)
+        for agente in agentes:
+            tablaInventario(agente)
+            trendGraph(agente,600)
+            trendRAMGraph(agente,600)
+            generaReporte(agente)
+            
     else:
         print("El programa finalizo")
         exit(0)
