@@ -23,8 +23,10 @@ for agente in agentes:
     agente.interfazSelec = interfaz
     t = threading.Thread(name="Hilo "+str(i+1),target=update, args=(agente,interfaz), daemon=True)
     t.start() """
-    """ t = threading.Thread(name="Hilo "+str(i+1),target=trendUpdate, args=(agente,), daemon=True)
-    t.start() """
+    #t = threading.Thread(name="Hilo "+str(i+1),target=trendUpdate, args=(agente,), daemon=True)
+    t2 = threading.Thread(name="Hilo "+str(i+1)+" Grafica",target=trendGraph, args=(agente,), daemon=True)
+    #t.start()
+    t2.start()
     i = i+1
 
 
@@ -74,10 +76,10 @@ while True:
         system("clear")
         print("""Inventario de la configuracion
         """)
-        for agente in agentes:
+        #for agente in agentes:
             #mostrarAcuerdo(agente)
             #tablaInventario(agente)
-            trendGraph(agente)
+            #trendGraph(agente)
             #trendRAMGraph(agente)
     else:
         print("El programa finalizo")
