@@ -35,17 +35,17 @@ def trendRAMGraph(agente: Agente, segundos: int, banderas = [False,False,False])
                          "VDEF:cargaSTDEV=cargaRAM,STDEV",
                          "VDEF:cargaLAST=cargaRAM,LAST",
 
-                         "CDEF:umbral15=cargaRAM,15,LT,0,cargaRAM,IF",
-                         "CDEF:umbral60=cargaRAM,60,LT,0,cargaRAM,IF",
-                         "CDEF:umbral80=cargaRAM,80,LT,0,cargaRAM,IF",
+                         "CDEF:umbral15=cargaRAM,"+str(agente.umbralRAM['ready'])+",LT,0,cargaRAM,IF",
+                         "CDEF:umbral60=cargaRAM,"+str(agente.umbralRAM['set'])+",LT,0,cargaRAM,IF",
+                         "CDEF:umbral80=cargaRAM,"+str(agente.umbralRAM['go'])+",LT,0,cargaRAM,IF",
 
                          "AREA:cargaRAM#0000FF:Carga de la RAM",
-                         "AREA:umbral15#CCFFCC:Carga RAM mayor que 15%",
-                         "AREA:umbral60#FFE0B3:Carga RAM mayor que 60%",
-                         "AREA:umbral80#FFB3B3:Carga RAM mayor que 80%",
-                         "HRULE:15#00FF00:Umbral 1 - 15%",
-                         "HRULE:60#FF9900:Umbral 16 - 60%",
-                         "HRULE:80#FF0000:Umbral 61 - 80%",
+                         "AREA:umbral15#CCFFCC:Carga RAM mayor que "+str(agente.umbralRAM['ready'])+"%",
+                         "AREA:umbral60#FFE0B3:Carga RAM mayor que "+str(agente.umbralRAM['set'])+"%",
+                         "AREA:umbral80#FFB3B3:Carga RAM mayor que "+str(agente.umbralRAM['go'])+"%",
+                         "HRULE:"+str(agente.umbralRAM['ready'])+"#00FF00:Umbral 1 - "+str(agente.umbralRAM['ready'])+"%",
+                         "HRULE:"+str(agente.umbralRAM['set'])+"#FF9900:Umbral "+str(agente.umbralRAM['ready']+1)+" - "+str(agente.umbralRAM['set'])+"%",
+                         "HRULE:"+str(agente.umbralRAM['go'])+"#FF0000:Umbral "+str(agente.umbralRAM['set']+1)+" - "+str(agente.umbralRAM['go'])+"%",
 
                          "PRINT:cargaMAX:%0.2lf",
                          "PRINT:cargaMAX:%Y %m %d %H %M:strftime",
@@ -62,17 +62,17 @@ def trendRAMGraph(agente: Agente, segundos: int, banderas = [False,False,False])
 
     #print(f"Valor: {valor}\nTiempo: {tiempo}")
     valor = float(ret['print[0]'])
-    if 15 < valor <= 60 and banderas[0]:
+    if agente.umbralRAM["ready"] < valor <= agente.umbralRAM["set"] and banderas[0]:
         banderas[0] = False
-        t = threading.Thread(target=send_alert_attached,args=("Se sobrepaso el umbral READY en RAM",imgpath+"deteccionRAM.png"),daemon=True)
+        t = threading.Thread(target=send_alert_attached,args=("Se sobrepaso el umbral READY en RAM con el valor "+str(valor)+" en el momento "+tiempo,imgpath+"deteccionRAM.png"),daemon=True)
         t.start()
-    if 60 < valor <= 80 and banderas[1]:
+    if agente.umbralRAM["set"] < valor <= agente.umbralRAM["go"] and banderas[1]:
         banderas[1] = False
-        t = threading.Thread(target=send_alert_attached,args=("Se sobrepaso el umbral SET en RAM",imgpath+"deteccionRAM.png"),daemon=True)
+        t = threading.Thread(target=send_alert_attached,args=("Se sobrepaso el umbral SET en RAM con el valor "+str(valor)+" en el momento "+tiempo,imgpath+"deteccionRAM.png"),daemon=True)
         t.start()
-    if valor > 80 and banderas[2]:
+    if valor > agente.umbralRAM["go"] and banderas[2]:
         banderas[2] = False
-        t = threading.Thread(target=send_alert_attached,args=("Se sobrepaso el umbral GO en RAM",imgpath+"deteccionRAM.png"),daemon=True)
+        t = threading.Thread(target=send_alert_attached,args=("Se sobrepaso el umbral GO en RAM con el valor "+str(valor)+" en el momento "+tiempo,imgpath+"deteccionRAM.png"),daemon=True)
         t.start()
 
 def trendGraph(agente: Agente, segundos: int, banderas = [False,False,False]):
@@ -99,17 +99,17 @@ def trendGraph(agente: Agente, segundos: int, banderas = [False,False,False]):
                          "VDEF:cargaSTDEV=cargaCPU,STDEV",
                          "VDEF:cargaLAST=cargaCPU,LAST",
 
-                         "CDEF:umbral15=cargaCPU,15,LT,0,cargaCPU,IF",
-                         "CDEF:umbral60=cargaCPU,60,LT,0,cargaCPU,IF",
-                         "CDEF:umbral80=cargaCPU,80,LT,0,cargaCPU,IF",
+                         "CDEF:umbral15=cargaCPU,"+str(agente.umbralCPU['ready'])+",LT,0,cargaCPU,IF",
+                         "CDEF:umbral60=cargaCPU,"+str(agente.umbralCPU['set'])+",LT,0,cargaCPU,IF",
+                         "CDEF:umbral80=cargaCPU,"+str(agente.umbralCPU['go'])+",LT,0,cargaCPU,IF",
 
                          "AREA:cargaCPU#0000FF:Carga del CPU",
-                         "AREA:umbral15#CCFFCC:Carga CPU mayor que 15%",
-                         "AREA:umbral60#FFE0B3:Carga CPU mayor que 60%",
-                         "AREA:umbral80#FFB3B3:Carga CPU mayor que 80%",
-                         "HRULE:15#00FF00:Umbral 1 - 15%",
-                         "HRULE:60#FF9900:Umbral 16 - 60%",
-                         "HRULE:80#FF0000:Umbral 61 - 80%",
+                         "AREA:umbral15#CCFFCC:Carga CPU mayor que "+str(agente.umbralCPU['ready'])+"%",
+                         "AREA:umbral60#FFE0B3:Carga CPU mayor que "+str(agente.umbralCPU['set'])+"%",
+                         "AREA:umbral80#FFB3B3:Carga CPU mayor que "+str(agente.umbralCPU['go'])+"%",
+                         "HRULE:"+str(agente.umbralCPU['ready'])+"#00FF00:Umbral 1 - "+str(agente.umbralCPU['ready'])+"%",
+                         "HRULE:"+str(agente.umbralCPU['set'])+"#FF9900:Umbral "+str(agente.umbralCPU['ready']+1)+" - "+str(agente.umbralCPU['set'])+"%",
+                         "HRULE:"+str(agente.umbralCPU['go'])+"#FF0000:Umbral "+str(agente.umbralCPU['set']+1)+" - "+str(agente.umbralCPU['go'])+"%",
 
                          "PRINT:cargaLAST:%0.2lf",
                          "PRINT:cargaLAST:%Y %m %d %H %M:strftime",
@@ -126,17 +126,17 @@ def trendGraph(agente: Agente, segundos: int, banderas = [False,False,False]):
 
     #print(f"Valor: {valor}\nTiempo: {tiempo}")
     valor = float(ret['print[0]'])
-    if 15 < valor <= 60 and banderas[0]:
+    if agente.umbralCPU["ready"] < valor <= agente.umbralCPU["set"] and banderas[0]:
         banderas[0] = False
-        t = threading.Thread(target=send_alert_attached,args=("Se sobrepaso el umbral READY en CPU",imgpath+"deteccionCPU.png"),daemon=True)
+        t = threading.Thread(target=send_alert_attached,args=("Se sobrepaso el umbral READY en CPU con el valor "+str(valor)+" en el momento "+tiempo,imgpath+"deteccionCPU.png"),daemon=True)
         t.start()
-    if 60 < valor <= 80 and banderas[1]:
+    if agente.umbralCPU["set"] < valor <= agente.umbralCPU["go"] and banderas[1]:
         banderas[1] = False
-        t = threading.Thread(target=send_alert_attached,args=("Se sobrepaso el umbral SET en CPU",imgpath+"deteccionCPU.png"),daemon=True)
+        t = threading.Thread(target=send_alert_attached,args=("Se sobrepaso el umbral SET en CPU con el valor "+str(valor)+" en el momento "+tiempo,imgpath+"deteccionCPU.png"),daemon=True)
         t.start()
-    if valor > 80 and banderas[2]:
+    if valor > agente.umbralCPU["go"] and banderas[2]:
         banderas[2] = False
-        t = threading.Thread(target=send_alert_attached,args=("Se sobrepaso el umbral GO en CPU",imgpath+"deteccionCPU.png"),daemon=True)
+        t = threading.Thread(target=send_alert_attached,args=("Se sobrepaso el umbral GO en CPU con el valor "+str(valor)+" en el momento "+tiempo,imgpath+"deteccionCPU.png"),daemon=True)
         t.start()
 
 def grafica(agente: Agente, tiempoInicial, tiempoFinal, interfaz: int):
@@ -242,3 +242,47 @@ hilo2 = threading.Thread(name='contador',
                             args=(segundos,))
 hilo.start()
 hilo2.start() """
+
+def genericaCPU(agente: Agente, segundos: int):
+    rrdpath = "datosGenerados/agente_"+agente.host + \
+        "/RRDagenteTrend_"+agente.host+".rrd"
+    imgpath = "datosGenerados/agente_"+agente.host+"/"
+
+    ultima_lectura = int(rrdtool.last(rrdpath))
+    tiempo_final = ultima_lectura
+    tiempo_inicial = tiempo_final - segundos
+
+    ret = rrdtool.graph(imgpath+"umbralCPU.png",
+                         "--start", str(tiempo_inicial),
+                         "--end", str(tiempo_final),
+                         "--vertical-label=Cpu load",
+                         '--lower-limit', '0',
+                         '--upper-limit', '100',
+                         "--title=Uso del CPU del host "+agente.host+"\n Detección de umbrales",
+
+                         "DEF:cargaCPU="+rrdpath+":CPUload:AVERAGE",
+
+                         "AREA:cargaCPU#0000FF:Carga del CPU")
+
+def genericaRAM(agente: Agente, segundos: int):
+    rrdpath = "datosGenerados/agente_"+agente.host + \
+        "/RRDagenteTrend_"+agente.host+".rrd"
+    imgpath = "datosGenerados/agente_"+agente.host+"/"
+
+    ultima_lectura = int(rrdtool.last(rrdpath))
+    tiempo_final = ultima_lectura
+    tiempo_inicial = tiempo_final - segundos
+
+    ret = rrdtool.graph(imgpath+"umbralRAM.png",
+                         "--start", str(tiempo_inicial),
+                         "--end", str(tiempo_final),
+                         "--vertical-label=RAM load",
+                         '--lower-limit', '0',
+                         '--upper-limit', '100',
+                         "--title=Uso de la RAM del host "+agente.host+"\n Detección de umbrales",
+
+                         "DEF:cargaRAM="+rrdpath+":RAMload:AVERAGE",
+
+                         "AREA:cargaRAM#0000FF:Carga de la RAM")
+
+#send_alert_attached("cacota","datosGenerados/agente_192.168.0.22/deteccionCPU.png")

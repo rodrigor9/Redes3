@@ -22,6 +22,9 @@ class Agente():
         self.cadenaMasGrande = 0
         self.ubicacion = ""
         self.tiempoActividad = 0
+        self.umbralCPU = {}
+        self.umbralRAM = {}
+        self.umbralHDD = {}
     def __str__(self) -> str:
         estado = "Up" if self.estado else "Down"
         columnaDesc = "Descripcion"
