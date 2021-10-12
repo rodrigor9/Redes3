@@ -39,6 +39,7 @@ Se estipula que la sociedad ASR se compromete a que el uso del procesador no sup
 De la misma forma el uso de la memoria RAM no superara el 60%
 Y finalmente el almacenamiento no sobrepasara el 80%
 
+De lo anterior se definieron esos valores debido al analisis historico del comportamiento normal del agente.
 
 Segundo. – Obligaciones del cliente para poder llevar a cabo los servicios contratados
 

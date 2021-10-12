@@ -258,7 +258,7 @@ def grafica(agente: Agente, tiempoInicial, tiempoFinal, interfaz: int):
 
 def send_alert_attached(subject,imgpath):
     mailsender = "luciaprueba027@gmail.com"
-    mailreceip = "luciaprueba027@gmail.com"
+    mailreceip = " tanibet.escom@gmail.com"
     mailserver = 'smtp.gmail.com: 587'
     password = 'Secreto123!'
     """ Envía un correo electrónico adjuntando la imagen en IMG
