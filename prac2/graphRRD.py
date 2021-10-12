@@ -139,6 +139,70 @@ def trendGraph(agente: Agente, segundos: int, banderas = [False,False,False]):
         t = threading.Thread(target=send_alert_attached,args=("Se sobrepaso el umbral GO en CPU con el valor "+str(valor)+" en el momento "+tiempo,imgpath+"deteccionCPU.png"),daemon=True)
         t.start()
 
+def trendHDDGraph(agente: Agente, segundos: int, banderas = [False,False,False]):
+    rrdpath = "datosGenerados/agente_"+agente.host + \
+        "/RRDagenteTrend_"+agente.host+".rrd"
+    imgpath = "datosGenerados/agente_"+agente.host+"/"
+
+    ultima_lectura = int(rrdtool.last(rrdpath))
+    tiempo_final = ultima_lectura
+    tiempo_inicial = tiempo_final - segundos
+
+    ret = rrdtool.graphv(imgpath+"deteccionHDD.png",
+                         "--start", str(tiempo_inicial),
+                         "--end", str(tiempo_final),
+                         "--vertical-label=Disk load",
+                         '--lower-limit', '0',
+                         '--upper-limit', '100',
+                         "--title=Uso del disco del host "+agente.host+"\n Detección de umbrales",
+
+                         "DEF:cargaHDD="+rrdpath+":HDDload:AVERAGE",
+
+                         "VDEF:cargaMAX=cargaHDD,MAXIMUM",
+                         "VDEF:cargaMIN=cargaHDD,MINIMUM",
+                         "VDEF:cargaSTDEV=cargaHDD,STDEV",
+                         "VDEF:cargaLAST=cargaHDD,LAST",
+
+                         "CDEF:umbral15=cargaHDD,"+str(agente.umbralHDD['ready'])+",LT,0,cargaHDD,IF",
+                         "CDEF:umbral60=cargaHDD,"+str(agente.umbralHDD['set'])+",LT,0,cargaHDD,IF",
+                         "CDEF:umbral80=cargaHDD,"+str(agente.umbralHDD['go'])+",LT,0,cargaHDD,IF",
+
+                         "AREA:cargaHDD#0000FF:Carga del disco",
+                         "AREA:umbral15#CCFFCC:Carga disco mayor que "+str(agente.umbralHDD['ready'])+"%",
+                         "AREA:umbral60#FFE0B3:Carga disco mayor que "+str(agente.umbralHDD['set'])+"%",
+                         "AREA:umbral80#FFB3B3:Carga disco mayor que "+str(agente.umbralHDD['go'])+"%",
+                         "HRULE:"+str(agente.umbralHDD['ready'])+"#00FF00:Umbral 1 - "+str(agente.umbralHDD['ready'])+"%",
+                         "HRULE:"+str(agente.umbralHDD['set'])+"#FF9900:Umbral "+str(agente.umbralHDD['ready']+1)+" - "+str(agente.umbralHDD['set'])+"%",
+                         "HRULE:"+str(agente.umbralHDD['go'])+"#FF0000:Umbral "+str(agente.umbralHDD['set']+1)+" - "+str(agente.umbralHDD['go'])+"%",
+
+                         "PRINT:cargaLAST:%0.2lf",
+                         "PRINT:cargaLAST:%Y %m %d %H %M:strftime",
+                         "GPRINT:cargaMIN:%6.2lf %SMIN",
+                         "GPRINT:cargaMAX:%6.2lf %SMAX",
+                         "GPRINT:cargaSTDEV:%6.2lf %SSTDEV",
+                         "GPRINT:cargaLAST:%6.2lf %SLAST")
+
+    valor = ret["print[0]"]
+    tiempo = ret["print[1]"].replace(" ", "-", 2)
+    tiempo = tiempo.split(sep=" ", maxsplit=1)
+    tiempo[1] = tiempo[1].replace(" ", ":")
+    tiempo = " ".join(tiempo)
+
+    #print(f"Valor: {valor}\nTiempo: {tiempo}")
+    valor = float(ret['print[0]'])
+    if agente.umbralHDD["ready"] < valor <= agente.umbralHDD["set"] and banderas[0]:
+        banderas[0] = False
+        t = threading.Thread(target=send_alert_attached,args=("Se sobrepaso el umbral READY en disco con el valor "+str(valor)+" en el momento "+tiempo,imgpath+"deteccionHDD.png"),daemon=True)
+        t.start()
+    if agente.umbralHDD["set"] < valor <= agente.umbralHDD["go"] and banderas[1]:
+        banderas[1] = False
+        t = threading.Thread(target=send_alert_attached,args=("Se sobrepaso el umbral SET en disco con el valor "+str(valor)+" en el momento "+tiempo,imgpath+"deteccionHDD.png"),daemon=True)
+        t.start()
+    if valor > agente.umbralHDD["go"] and banderas[2]:
+        banderas[2] = False
+        t = threading.Thread(target=send_alert_attached,args=("Se sobrepaso el umbral GO en disco con el valor "+str(valor)+" en el momento "+tiempo,imgpath+"deteccionHDD.png"),daemon=True)
+        t.start()
+
 def grafica(agente: Agente, tiempoInicial, tiempoFinal, interfaz: int):
     # Grafica desde el tiempo actual menos diez minutos
 
@@ -284,5 +348,26 @@ def genericaRAM(agente: Agente, segundos: int):
                          "DEF:cargaRAM="+rrdpath+":RAMload:AVERAGE",
 
                          "AREA:cargaRAM#0000FF:Carga de la RAM")
+
+def genericaHDD(agente: Agente, segundos: int):
+    rrdpath = "datosGenerados/agente_"+agente.host + \
+        "/RRDagenteTrend_"+agente.host+".rrd"
+    imgpath = "datosGenerados/agente_"+agente.host+"/"
+
+    ultima_lectura = int(rrdtool.last(rrdpath))
+    tiempo_final = ultima_lectura
+    tiempo_inicial = tiempo_final - segundos
+
+    ret = rrdtool.graph(imgpath+"umbralHDD.png",
+                         "--start", str(tiempo_inicial),
+                         "--end", str(tiempo_final),
+                         "--vertical-label=Disk load",
+                         '--lower-limit', '0',
+                         '--upper-limit', '100',
+                         "--title=Uso de disco del host "+agente.host+"\n Detección de umbrales",
+
+                         "DEF:cargaHDD="+rrdpath+":HDDload:AVERAGE",
+
+                         "AREA:cargaHDD#0000FF:Carga del disco")
 
 #send_alert_attached("cacota","datosGenerados/agente_192.168.0.22/deteccionCPU.png")

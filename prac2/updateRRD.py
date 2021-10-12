@@ -47,13 +47,13 @@ def update(agente: Agente, interfaz: int):
                      ".rrd", "datosGenerados/agente_"+agente.host+"/RRDagente_"+agente.host+".xml")
         time.sleep(1)
 
+
 def trendUpdate(agente: Agente):
 
-    lista = [True, True, True]
-    banderas={}
-    banderas["cpu"] = lista.copy()
-    banderas["ram"] = lista.copy()
-    banderas["hdd"] = lista.copy()
+    banderas = {}
+    banderas["cpu"] = [True, True, True]
+    banderas["ram"] = [True, True, True]
+    banderas["hdd"] = [True, True, True]
     logging.info("Monitorizando para el host " + agente.host)
     rrdpath = "datosGenerados/agente_"+agente.host
     carga_CPU = 0
@@ -69,23 +69,26 @@ def trendUpdate(agente: Agente):
     inicial = time.time()
     limite = time.time() + 300
 
-    while inicial<= limite:
+    while inicial <= limite:
         carga_CPU = int(consultaSNMP(agente.comunidad, agente.host,
-                                        oidCPU, agente.puerto, agente.version))
-        carga_RAM = calculoCargaRamWindows(agente) if "Windows" in agente.desc else calculoCargaRamLinux(agente)
-        carga_HDD = 20
+                                     oidCPU, agente.puerto, agente.version))
+        carga_RAM = calculoCargaRamWindows(
+            agente) if "Windows" in agente.desc else calculoCargaRamLinux(agente)
+        carga_HDD = calculoCargaHDDWindows(agente) if "Windows" in agente.desc else calculoCargaHDDLinux(agente)
         valor = "N:" + str(carga_CPU)+":"+str(carga_RAM)+":"+str(carga_HDD)
-        #print(valor)
+        # print(valor)
         rrdtool.update(rrdpath+"/RRDagenteTrend_" +
-                        agente.host+".rrd", valor)
+                       agente.host+".rrd", valor)
         rrdtool.dump(rrdpath+"/RRDagenteTrend_"+agente.host +
-                        ".rrd", rrdpath+"/RRDagenteTrend_"+agente.host+".xml")
+                     ".rrd", rrdpath+"/RRDagenteTrend_"+agente.host+".xml")
         time.sleep(1)
-        trendGraph(agente,60,banderas["cpu"])
-        trendRAMGraph(agente,60,banderas["ram"])
+        trendGraph(agente, 60, banderas["cpu"])
+        trendRAMGraph(agente, 60, banderas["ram"])
+        trendHDDGraph(agente,60,banderas["hdd"])
         inicial = time.time()
-    
+
     print("Finalizo el "+str(threading.current_thread().getName()))
+
 
 def calculoCargaRamWindows(agente: Agente):
     """ unidadEnBytes = int(consultaSNMP(agente.comunidad, agente.host,
@@ -99,11 +102,29 @@ def calculoCargaRamWindows(agente: Agente):
     cargaRAM = hrStorageUsed*100/hrStorageSize
     return cargaRAM
 
+def calculoCargaHDDLinux(agente: Agente):
+    cargaHDD = int(consultaSNMP(
+            agente.comunidad, agente.host, "1.3.6.1.4.1.2021.9.1.9.1", agente.puerto, agente.version))
+    return cargaHDD
+
+def calculoCargaHDDWindows(agente: Agente):
+    """ unidadEnBytes = int(consultaSNMP(agente.comunidad, agente.host,
+                                 "1.3.6.1.2.1.25.2.3.1.4.1", agente.puerto, agente.version)) # Bytes de una unidad """
+
+    hrStorageUsed = int(consultaSNMP(agente.comunidad, agente.host,
+                                     "1.3.6.1.2.1.25.2.3.1.6.1", agente.puerto, agente.version))  # En unidades
+    hrStorageSize = int(consultaSNMP(agente.comunidad, agente.host,
+                                     "1.3.6.1.2.1.25.2.3.1.5.1", agente.puerto, agente.version))  # En unidades
+    # Regla de 3 para sacar porcentaje
+    cargaHDD = hrStorageUsed*100/hrStorageSize
+    return cargaHDD
+
+
 def calculoCargaRamLinux(agente: Agente):
     memTotalReal = int(consultaSNMP(agente.comunidad, agente.host,
-                                     "1.3.6.1.4.1.2021.4.5.0", agente.puerto, agente.version)) # En kB's
+                                    "1.3.6.1.4.1.2021.4.5.0", agente.puerto, agente.version))  # En kB's
     memUsed = int(consultaSNMP(agente.comunidad, agente.host,
-                                     "1.3.6.1.4.1.2021.4.6.0", agente.puerto, agente.version)) # En kB's
+                               "1.3.6.1.4.1.2021.4.6.0", agente.puerto, agente.version))  # En kB's
 
     cargaRAM = memUsed*100/memTotalReal
     return cargaRAM

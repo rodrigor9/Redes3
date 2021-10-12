@@ -17,9 +17,9 @@ def mostrarAcuerdo(agente: Agente):
         agente.umbralRAM["set"] = 50
         agente.umbralRAM["ready"] = 40
 
-        agente.umbralHDD["go"] = 0
-        agente.umbralHDD["set"] = 0
-        agente.umbralHDD["ready"] = 0
+        agente.umbralHDD["go"] = 80
+        agente.umbralHDD["set"] = 65
+        agente.umbralHDD["ready"] = 50
 
     else:
         agente.umbralCPU["go"] = 70
@@ -30,9 +30,9 @@ def mostrarAcuerdo(agente: Agente):
         agente.umbralRAM["set"] = 25
         agente.umbralRAM["ready"] = 20
 
-        agente.umbralHDD["go"] = 0
-        agente.umbralHDD["set"] = 0
-        agente.umbralHDD["ready"] = 0
+        agente.umbralHDD["go"] = 80
+        agente.umbralHDD["set"] = 65
+        agente.umbralHDD["ready"] = 50
 
 
     list_of_lines[0] = "CONTRATO DE PRESTACIÓN DE SERVICIOS PARA LA ADMINISTRACION DE RENDIMIENTO DEL HOST "+agente.host+"\n"

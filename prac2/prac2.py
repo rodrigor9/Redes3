@@ -72,12 +72,10 @@ while True:
 
     elif opcion == 5:
         system("clear")
-        """ for agente in agentes:
-            mostrarAcuerdo(agente) """
-        threads =[]
         for agente in agentes:
             mostrarAcuerdo(agente)
 
+        threads =[]
         for i,agente in enumerate(agentes):
             t = threading.Thread(name="Hilo "+str(i+1),target=trendUpdate, args=(agente,), daemon=True)
             threads.append(t)
@@ -90,9 +88,11 @@ while True:
             tablaInventario(agente)
             trendGraph(agente,300)
             trendRAMGraph(agente,300)
+            trendHDDGraph(agente,300)
             generaReporte(agente)
             #genericaCPU(agente, 300)
             #genericaRAM(agente, 300)
+            #genericaHDD(agente, 300)
             
     else:
         print("El programa finalizo")

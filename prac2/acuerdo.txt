@@ -37,7 +37,7 @@ Rendimiento de procesador, Memoria RAM y Almacenamiento del host 192.168.0.21
 
 Se estipula que la sociedad ASR se compromete a que el uso del procesador no superara el 30%
 De la misma forma el uso de la memoria RAM no superara el 60%
-Y finalmente el almacenamiento no sobrepasara el 0%
+Y finalmente el almacenamiento no sobrepasara el 80%
 
 
 Segundo. – Obligaciones del cliente para poder llevar a cabo los servicios contratados
