@@ -1,5 +1,8 @@
 import logging
 import threading
+import smtplib
+from email.mime.image import MIMEImage
+from email.mime.multipart import MIMEMultipart
 from claseAgente import Agente
 import rrdtool
 import time
@@ -60,14 +63,17 @@ def trendRAMGraph(agente: Agente, segundos: int, banderas = [False,False,False])
     #print(f"Valor: {valor}\nTiempo: {tiempo}")
     valor = float(ret['print[0]'])
     if 15 < valor <= 60 and banderas[0]:
-        print("Ready")
         banderas[0] = False
+        t = threading.Thread(target=send_alert_attached,args=("Se sobrepaso el umbral READY en RAM",imgpath+"deteccionRAM.png"),daemon=True)
+        t.start()
     if 60 < valor <= 80 and banderas[1]:
-        print("Set")
         banderas[1] = False
+        t = threading.Thread(target=send_alert_attached,args=("Se sobrepaso el umbral SET en RAM",imgpath+"deteccionRAM.png"),daemon=True)
+        t.start()
     if valor > 80 and banderas[2]:
-        print("Go")
         banderas[2] = False
+        t = threading.Thread(target=send_alert_attached,args=("Se sobrepaso el umbral GO en RAM",imgpath+"deteccionRAM.png"),daemon=True)
+        t.start()
 
 def trendGraph(agente: Agente, segundos: int, banderas = [False,False,False]):
     rrdpath = "datosGenerados/agente_"+agente.host + \
@@ -121,14 +127,17 @@ def trendGraph(agente: Agente, segundos: int, banderas = [False,False,False]):
     #print(f"Valor: {valor}\nTiempo: {tiempo}")
     valor = float(ret['print[0]'])
     if 15 < valor <= 60 and banderas[0]:
-        print("Ready")
         banderas[0] = False
+        t = threading.Thread(target=send_alert_attached,args=("Se sobrepaso el umbral READY en CPU",imgpath+"deteccionCPU.png"),daemon=True)
+        t.start()
     if 60 < valor <= 80 and banderas[1]:
-        print("Set")
         banderas[1] = False
+        t = threading.Thread(target=send_alert_attached,args=("Se sobrepaso el umbral SET en CPU",imgpath+"deteccionCPU.png"),daemon=True)
+        t.start()
     if valor > 80 and banderas[2]:
-        print("Go")
         banderas[2] = False
+        t = threading.Thread(target=send_alert_attached,args=("Se sobrepaso el umbral GO en CPU",imgpath+"deteccionCPU.png"),daemon=True)
+        t.start()
 
 def grafica(agente: Agente, tiempoInicial, tiempoFinal, interfaz: int):
     # Grafica desde el tiempo actual menos diez minutos
@@ -183,6 +192,29 @@ def grafica(agente: Agente, tiempoInicial, tiempoFinal, interfaz: int):
 
                         "AREA:udpOutDatagrams#9400D3:Datagramas enviados.")
 
+def send_alert_attached(subject,imgpath):
+    mailsender = "sburkok@gmail.com"
+    mailreceip = "sburkok@gmail.com"
+    mailserver = 'smtp.gmail.com: 587'
+    password = 'Secreto123!'
+    """ Envía un correo electrónico adjuntando la imagen en IMG
+    """
+    msg = MIMEMultipart()
+    msg['Subject'] = subject
+    msg['From'] = mailsender
+    msg['To'] = mailreceip
+    fp = open(imgpath, 'rb')
+    img = MIMEImage(fp.read())
+    fp.close()
+    msg.attach(img)
+    s = smtplib.SMTP(mailserver)
+
+    s.starttls()
+    # Login Credentials for sending the mail
+    s.login(mailsender, password)
+
+    s.sendmail(mailsender, mailreceip, msg.as_string())
+    s.quit()
 
 """ import threading, time
 

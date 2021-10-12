@@ -75,7 +75,7 @@ while True:
         
         i=0
         threads =[]
-        """ for agente in agentes:
+        for agente in agentes:
             mostrarAcuerdo(agente)
 
         for agente in agentes:
@@ -84,7 +84,7 @@ while True:
             t.start()
             i = i+1
         for i in range(len(threads)):
-            threads[i].join() """
+            threads[i].join()
         print("""Inventario de la configuracion
         """)
         for agente in agentes:
