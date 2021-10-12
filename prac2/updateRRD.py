@@ -72,8 +72,7 @@ def trendUpdate(agente: Agente):
     while inicial <= limite:
         carga_CPU = int(consultaSNMP(agente.comunidad, agente.host,
                                      oidCPU, agente.puerto, agente.version))
-        carga_RAM = calculoCargaRamWindows(
-            agente) if "Windows" in agente.desc else calculoCargaRamLinux(agente)
+        carga_RAM = calculoCargaRamWindows(agente) if "Windows" in agente.desc else calculoCargaRamLinux(agente)
         carga_HDD = calculoCargaHDDWindows(agente) if "Windows" in agente.desc else calculoCargaHDDLinux(agente)
         valor = "N:" + str(carga_CPU)+":"+str(carga_RAM)+":"+str(carga_HDD)
         # print(valor)

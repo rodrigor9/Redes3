@@ -257,13 +257,13 @@ def grafica(agente: Agente, tiempoInicial, tiempoFinal, interfaz: int):
                         "AREA:udpOutDatagrams#9400D3:Datagramas enviados.")
 
 def send_alert_attached(subject,imgpath):
-    mailsender = "sburkok@gmail.com"
-    mailreceip = "sburkok@gmail.com"
+    mailsender = "luciaprueba027@gmail.com"
+    mailreceip = "luciaprueba027@gmail.com"
     mailserver = 'smtp.gmail.com: 587'
     password = 'Secreto123!'
     """ Envía un correo electrónico adjuntando la imagen en IMG
     """
-    msg = MIMEMultipart()
+    msg = MIMEMultipart("Te mando este mensaje")
     msg['Subject'] = subject
     msg['From'] = mailsender
     msg['To'] = mailreceip
