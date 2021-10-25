@@ -13,6 +13,7 @@ pip3 install xhtml2pdf
 ```
 ## Ejecucion de la practica 📦
 _El archivo principal a ejecutar es el_ **prac2.py**
+_Los agentes se obtienen de **datos.txt**, las ip estan acorde a mi computadora, cambiarlas si es necesario para sus pruebas_
 
 ## Autor ✒️
 
