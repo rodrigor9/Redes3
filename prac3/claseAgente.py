@@ -82,6 +82,8 @@ def obtenerAgentes():
             crearRRD(data[0])
         if not os.path.exists("datosGenerados/agente_"+data[0]+"/RRDagenteTrend_"+data[0]+".rrd"):
             trendCreate(data[0])
+        if not os.path.exists("datosGenerados/agente_"+data[0]+"/RRDagenteUDP_"+data[0]+".rrd"):
+            udpCreate(data[0])
 
 
 
@@ -117,6 +119,8 @@ def agregarAgente(agente: Agente, agentes):
         crearRRD(agente.host)
     if not os.path.exists("datosGenerados/agente_"+agente.host+"/RRDagenteTrend_"+agente.host+".rrd"):
         trendCreate(agente.host)
+    if not os.path.exists("datosGenerados/agente_"+agente.host+"/RRDagenteUDP_"+agente.host+".rrd"):
+            udpCreate(agente.host)
 
     if ping(agente.host) == 0:
         os.system("clear")  

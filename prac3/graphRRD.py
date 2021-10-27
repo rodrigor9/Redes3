@@ -10,7 +10,56 @@ import time
 logging.basicConfig(level=logging.INFO,
                     format='[%(levelname)s] (%(threadName)-s) %(message)s')
 
+def graficaUDP(agente: Agente, tiempoInicial, tiempoFinal):
+    # Grafica desde el tiempo actual menos diez minutos
 
+    tiempoInicial = time.strptime(tiempoInicial, "%d-%m-%Y %H:%M")
+    tiempoInicial = int(time.mktime(tiempoInicial))
+
+    tiempoFinal = time.strptime(tiempoFinal, "%d-%m-%Y %H:%M")
+    tiempoFinal = int(time.mktime(tiempoFinal))
+
+
+    rrdpath = "datosGenerados/agente_"+agente.host + \
+        "/RRDagenteUDP_"+agente.host+".rrd"
+    imgpath = "datosGenerados/agente_"+agente.host+"/"
+    
+    ret = rrdtool.graphv(imgpath+"paquetesEnviadosUDP.png",
+                         "--start", str(tiempoInicial),
+                         "--end", str(tiempoFinal),
+                         "--vertical-label=Numero de datagramas",
+                         "--title=Datagramas enviados por el host "+agente.host,
+
+                         "DEF:protocoloUDP="+rrdpath+":protocoloUDP:AVERAGE",
+
+                         "VDEF:cargaMAX=protocoloUDP,MAXIMUM",
+                         "VDEF:cargaMIN=protocoloUDP,MINIMUM",
+                         
+
+                         "CDEF:antesLimite=protocoloUDP,750,GT,0,protocoloUDP,IF",
+                         "CDEF:limite=protocoloUDP,750,LT,0,protocoloUDP,IF",
+                         "CDEF:limite2=protocoloUDP,750,LT,INF,protocoloUDP,IF",
+
+                         "VDEF:antesLimiteLAST=antesLimite,MAXIMUM",
+                         "VDEF:limiteFIRST=limite2,MINIMUM",
+
+                         "AREA:protocoloUDP#0000FF:Datagramas enviados",
+                         "AREA:limite#FFB3B3:Datagramas enviados que pasaron el limite",
+                         "HRULE:750#FF0000:Limite de datagramas",
+
+                         "PRINT:antesLimiteLAST:%0.2lf",
+                         "PRINT:antesLimiteLAST:%Y %m %d %H %M:strftime",
+
+                         "PRINT:limiteFIRST:%0.2lf",
+                         "PRINT:limiteFIRST:%Y %m %d %H %M:strftime",
+
+                         "GPRINT:cargaMIN:%6.2lf %SMIN",
+                         "GPRINT:cargaMAX:%6.2lf %SMAX",
+
+                         "GPRINT:antesLimiteLAST:%6.2lf %SUltimo Valor Cuota Regular",
+                         "GPRINT:limiteFIRST:%6.2lf %SPrimer Valor Cuota Doble")
+                         
+    
 def trendRAMGraph(agente: Agente, segundos: int, banderas = [False,False,False]):
     rrdpath = "datosGenerados/agente_"+agente.host + \
         "/RRDagenteTrend_"+agente.host+".rrd"
@@ -280,33 +329,6 @@ def send_alert_attached(subject,imgpath):
     s.sendmail(mailsender, mailreceip, msg.as_string())
     s.quit()
 
-""" import threading, time
-
-vmas_hilos=False
-def contar(segundos):
-    global vmas_hilos
-    inicial = time.time()
-    limite = inicial + segundos
-    while inicial<=limite:
-        inicial = time.time()
-    vmas_hilos = True
-    
-def accion():
-    global vmas_hilos
-    while not vmas_hilos:
-        print("Hola")
-    
-
-segundos = 300
-hilo = threading.Thread(name='contador',
-                            target=accion, 
-                            args=())
-hilo2 = threading.Thread(name='contador',
-                            target=contar, 
-                            args=(segundos,))
-hilo.start()
-hilo2.start() """
-
 def genericaCPU(agente: Agente, segundos: int):
     rrdpath = "datosGenerados/agente_"+agente.host + \
         "/RRDagenteTrend_"+agente.host+".rrd"
@@ -369,5 +391,3 @@ def genericaHDD(agente: Agente, segundos: int):
                          "DEF:cargaHDD="+rrdpath+":HDDload:AVERAGE",
 
                          "AREA:cargaHDD#0000FF:Carga del disco")
-
-#send_alert_attached("cacota","datosGenerados/agente_192.168.0.22/deteccionCPU.png")

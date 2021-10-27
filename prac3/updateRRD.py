@@ -88,6 +88,26 @@ def trendUpdate(agente: Agente):
 
     print("Finalizo el "+str(threading.current_thread().getName()))
 
+def udpUpdate(agente: Agente):
+
+    logging.info("Monitorizando para el host " + agente.host)
+    rrdpath = "datosGenerados/agente_"+agente.host
+    #inicial = time.time()
+    #limite = time.time() + 600
+
+    while True:
+        datagramasEnviados = int(consultaSNMP(agente.comunidad, agente.host,
+                                        "1.3.6.1.2.1.7.4.0", agente.puerto, agente.version))
+        valor = "N:" + str(datagramasEnviados)
+        print(valor)
+        rrdtool.update(rrdpath+"/RRDagenteUDP_" +
+                        agente.host+".rrd", valor)
+        rrdtool.dump(rrdpath+"/RRDagenteUDP_"+agente.host +
+                        ".rrd", rrdpath+"/RRDagenteUDP_"+agente.host+".xml")
+        time.sleep(1)
+        #inicial = time.time()
+
+    print("Finalizo el "+str(threading.current_thread().getName()))
 
 def calculoCargaRamWindows(agente: Agente):
     """ unidadEnBytes = int(consultaSNMP(agente.comunidad, agente.host,
@@ -117,7 +137,6 @@ def calculoCargaHDDWindows(agente: Agente):
     # Regla de 3 para sacar porcentaje
     cargaHDD = hrStorageUsed*100/hrStorageSize
     return cargaHDD
-
 
 def calculoCargaRamLinux(agente: Agente):
     memTotalReal = int(consultaSNMP(agente.comunidad, agente.host,

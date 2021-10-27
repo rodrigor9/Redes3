@@ -31,7 +31,7 @@ for agente in agentes:
 while True:
     opcion = 0
     opcion = int(input(
-        "Indique la acción que quiere hacer:\n1. Agregar agente\n2. Eliminar agente\n3. Obtener reporte\n4. Mostrar agentes\n5. Monitorizar el rendimiento de los agentes\nPresione cualquier otro para cerrar el programa\n"))
+        "Indique la acción que quiere hacer:\n1. Agregar agente\n2. Eliminar agente\n3. Obtener reporte\n4. Mostrar agentes\n5. Monitorizar el rendimiento de los agentes\n6. Facturacion\nPresione cualquier otro para cerrar el programa\n"))
     if opcion == 1:
         host = input("Indique el nombre del host o ip del dispositivo: ")
         snmp_v = input("Indique la versión de snmp a utilizar:\n1. v1\n2. v2c\n")
@@ -93,7 +93,17 @@ while True:
             #genericaCPU(agente, 300)
             #genericaRAM(agente, 300)
             #genericaHDD(agente, 300)
-            
+    elif opcion == 6:
+        system("clear")
+        """ for i,agente in enumerate(agentes):
+            t = threading.Thread(name="Hilo "+str(i+1),target=udpUpdate, args=(agente,), daemon=True)
+            t.start() """
+        """ tiempo_inicial = input("Indique el tiempo inicial con formato dd-mm-yyyy HH:MM: ")
+        tiempo_final = input("Indique el tiempo final con formato dd-mm-yyyy HH:MM: ") """
+        for agente in agentes:
+            tablaInventario(agente)
+            graficaUDP(agente,"26-10-2021 13:35","26-10-2021 13:47")
+        exit(0)
     else:
         print("El programa finalizo")
         exit(0)
