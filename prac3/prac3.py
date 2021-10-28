@@ -98,11 +98,19 @@ while True:
         """ for i,agente in enumerate(agentes):
             t = threading.Thread(name="Hilo "+str(i+1),target=udpUpdate, args=(agente,), daemon=True)
             t.start() """
-        """ tiempo_inicial = input("Indique el tiempo inicial con formato dd-mm-yyyy HH:MM: ")
-        tiempo_final = input("Indique el tiempo final con formato dd-mm-yyyy HH:MM: ") """
+
+
+        tiempo_inicial = input("Indique el tiempo inicial con formato dd-mm-yyyy HH:MM: ")
+        tiempo_final = input("Indique el tiempo final con formato dd-mm-yyyy HH:MM: ")
+        
+        """ tiempo_inicial = "26-10-2021 13:35"
+        tiempo_final = "26-10-2021 13:41" """
         for agente in agentes:
             tablaInventario(agente)
-            graficaUDP(agente,"26-10-2021 13:35","26-10-2021 13:47")
+            dataFactura = graficaUDP(agente,tiempo_inicial,tiempo_final)
+            dataFactura.append(tiempo_inicial)
+            dataFactura.append(tiempo_final)
+            generaFactura(agente, dataFactura)
         exit(0)
     else:
         print("El programa finalizo")

@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+
+    <title>Show Info</title>
+  </head>
+  <body>
+    <div class="container-fluid bg-secondary text-light d-flex justify-content-center mb-3">
+        <img src="./{{so}}.png" alt="" style="max-height: 100px;">
+        <h2 class="display-2 text-center" href="#">Sistema operativo {{so}}</h2>
+    </div>
+
+
+    <div class="container">
+        <h4 class="text-center display-6" style="color: blueviolet; margin-left: auto">Información acerca del agente</h4>
+        <table class="table table-striped table-bordered table-condensed">
+            <tbody>
+                <tr class="">
+                    <td>
+                        <span style="text-align: center;">{{desc}}</span>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <h6>
+                            <strong>Ubicación geográfica</strong>
+                        </h6>
+                        <span>{{ubicacion}}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h6>
+                            <strong>Puerto</strong>
+                        </h6>
+                        <span>{{puerto}}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h6>
+                            <strong>Tiempo de actividad</strong>
+                        </h6>
+                        <span>{{tiempoActividad}}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h6>
+                            <strong>Comunidad</strong>
+                        </h6>
+                        <span>{{comunidad}}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h6>
+                            <strong>IP</strong>
+                        </h6>
+                        <span>
+                            <a href="https://www.api2pdf.com">{{host}}</span>
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+        <hr />
+        <h4>Gráficas</h4>
+
+        <table class="table table-bordered table-condensed">
+            <tbody>
+                <tr>
+                    <td class="d-flex flex-column">
+                        <img src="{{carpeta}}/paquetesEnviadosUDP.png" alt="">
+                    </td>
+                    
+                </tr>
+                
+            </tbody>
+        </table>
+        <hr />
+    </div>
+        
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-12">
+                <h1>Facturacion periodo {{data[4]}} a {{data[5]}}</h1>
+                <table class="table">
+                    <thead>
+                      <tr>
+                        <th scope="col">Descripción</th>
+                        <th scope="col">Unidades</th>
+                        <th scope="col">Unidades permitidas</th>
+                        <th scope="col">Tiempo</th>
+                        <th scope="col">Precio</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      
+
+                        <tr>
+                            <th>Datagramas enviados</th>
+                            <th><b>{{data[0]}}</b></th>
+                            <th><b>750</b></th>
+                            <th>{{data[1]}}</th>
+                            <th><b>$499.00</b></th>
+                        </tr>
+
+                        {% if data[2] != "inf" %}
+                            <tr>
+                                <th>Datagramas enviados</th>
+                                <th style="color: red;"><b>{{data[2]}}</b></th>
+                                <th><b>750</b></th>
+                                <th>{{data[3]}}</th>
+                                <th style="color: red;"><b>$998.00</b></th>
+                            </tr>
+                        {% endif %}
+
+                        {% if data[2] != "inf" %}
+                            <tr>
+                                <th>TOTAL</th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th style="color: red;"><b>$998.00</b></th>
+                            </tr>
+                        {% endif %}
+
+                        {% if data[2] == "inf" %}
+                            <tr>
+                                <th>TOTAL</th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th><b>$449.00</b></th>
+                            </tr>
+                        {% endif %}
+
+                        
+
+                     
+                    </tbody>
+                  </table>
+
+            </div>
+        </div>
+    </div>
+
+
+
+
+  
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+  </body>
+</html>

@@ -10,6 +10,14 @@ import time
 logging.basicConfig(level=logging.INFO,
                     format='[%(levelname)s] (%(threadName)-s) %(message)s')
 
+def filtrarTiempoGraphV(data: str):
+    tiempo = data.replace(" ", "-", 2)
+    tiempo = tiempo.split(sep=" ", maxsplit=1)
+    tiempo[1] = tiempo[1].replace(" ", ":")
+    tiempo = " ".join(tiempo)
+    return tiempo
+
+
 def graficaUDP(agente: Agente, tiempoInicial, tiempoFinal):
     # Grafica desde el tiempo actual menos diez minutos
 
@@ -45,21 +53,29 @@ def graficaUDP(agente: Agente, tiempoInicial, tiempoFinal):
 
                          "AREA:protocoloUDP#0000FF:Datagramas enviados",
                          "AREA:limite#FFB3B3:Datagramas enviados que pasaron el limite",
-                         "HRULE:750#FF0000:Limite de datagramas",
+                         "HRULE:750#FF0000:Limite de datagramas [750]",
 
-                         "PRINT:antesLimiteLAST:%0.2lf",
-                         "PRINT:antesLimiteLAST:%Y %m %d %H %M:strftime",
+                         "PRINT:antesLimiteLAST:%0.0lf",
+                         "PRINT:antesLimiteLAST:%d %m %Y %H %M:strftime",
 
-                         "PRINT:limiteFIRST:%0.2lf",
-                         "PRINT:limiteFIRST:%Y %m %d %H %M:strftime",
+                         "PRINT:limiteFIRST:%0.0lf",
+                         "PRINT:limiteFIRST:%d %m %Y %H %M:strftime",
 
-                         "GPRINT:cargaMIN:%6.2lf %SMIN",
-                         "GPRINT:cargaMAX:%6.2lf %SMAX",
+                         "GPRINT:cargaMIN:%6.0lf %SMIN",
+                         "GPRINT:cargaMAX:%6.0lf %SMAX",
 
-                         "GPRINT:antesLimiteLAST:%6.2lf %SUltimo Valor Cuota Regular",
-                         "GPRINT:limiteFIRST:%6.2lf %SPrimer Valor Cuota Doble")
-                         
+                         "GPRINT:antesLimiteLAST:%6.0lf %SUltimo Valor Cuota Regular",
+                         "GPRINT:limiteFIRST:%6.0lf %SPrimer Valor Cuota Doble")
+    lista = []
+    for i in range(4):
+        string = f"print[{i}]"
+        lista.append(ret[string])
+
     
+    lista[1] = filtrarTiempoGraphV(lista[1])
+    lista[3] = filtrarTiempoGraphV(lista[3])
+    return lista
+
 def trendRAMGraph(agente: Agente, segundos: int, banderas = [False,False,False]):
     rrdpath = "datosGenerados/agente_"+agente.host + \
         "/RRDagenteTrend_"+agente.host+".rrd"

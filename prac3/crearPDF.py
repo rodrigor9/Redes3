@@ -33,3 +33,14 @@ def generaReporte(agente: Agente):
             'desc': agente.desc, 'comunidad': agente.comunidad, 'host': agente.host, 'tiempoActividad': agente.tiempoActividad, 'puerto': agente.puerto, 'ubicacion': agente.ubicacion}  # Nuevo!
     pisa.showLogging()
     convertHtmlToPdf(data, sourceHtml, outputFilename, base_dir)
+
+def generaFactura(agente: Agente, dataFactura: list):
+    carpetaImagenes = "datosGenerados/agente_"+agente.host
+    base_dir = pathlib.Path().parent.absolute()
+    sourceHtml = os.path.join(base_dir, 'factura.html')
+    outputFilename = carpetaImagenes+"/factura.pdf"
+
+    data = {'data':dataFactura,'carpeta': carpetaImagenes, 'so': agente.so,
+            'desc': agente.desc, 'comunidad': agente.comunidad, 'host': agente.host, 'tiempoActividad': agente.tiempoActividad, 'puerto': agente.puerto, 'ubicacion': agente.ubicacion}  # Nuevo!
+    pisa.showLogging()
+    convertHtmlToPdf(data, sourceHtml, outputFilename, base_dir)
