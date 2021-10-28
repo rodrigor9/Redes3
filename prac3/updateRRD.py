@@ -92,10 +92,10 @@ def udpUpdate(agente: Agente):
 
     logging.info("Monitorizando para el host " + agente.host)
     rrdpath = "datosGenerados/agente_"+agente.host
-    #inicial = time.time()
-    #limite = time.time() + 600
+    inicial = time.time()
+    limite = time.time() + 600
 
-    while True:
+    while inicial <= limite:
         datagramasEnviados = int(consultaSNMP(agente.comunidad, agente.host,
                                         "1.3.6.1.2.1.7.4.0", agente.puerto, agente.version))
         valor = "N:" + str(datagramasEnviados)
@@ -105,7 +105,7 @@ def udpUpdate(agente: Agente):
         rrdtool.dump(rrdpath+"/RRDagenteUDP_"+agente.host +
                         ".rrd", rrdpath+"/RRDagenteUDP_"+agente.host+".xml")
         time.sleep(1)
-        #inicial = time.time()
+        inicial = time.time()
 
     print("Finalizo el "+str(threading.current_thread().getName()))
 

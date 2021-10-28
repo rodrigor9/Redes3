@@ -95,9 +95,13 @@ while True:
             #genericaHDD(agente, 300)
     elif opcion == 6:
         system("clear")
-        """ for i,agente in enumerate(agentes):
+        threads = []
+        for i,agente in enumerate(agentes):
             t = threading.Thread(name="Hilo "+str(i+1),target=udpUpdate, args=(agente,), daemon=True)
-            t.start() """
+            threads.append(t)
+            t.start()
+        for i in range(len(threads)):
+            threads[i].join()
 
 
         tiempo_inicial = input("Indique el tiempo inicial con formato dd-mm-yyyy HH:MM: ")
