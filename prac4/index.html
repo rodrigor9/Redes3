@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <style>
+        
+    </style>
+
+</head>
+
+<body>
+    <!-- <h1>Reporte del dispositivo y/o agente: </h1>
+    <br>
+    <h2>ip de la computadora: {{ ip }} Comunidad: {{ comunidad }} Version de SNMP: {{ version }}
+        <br /> Puerto: {{ puerto }}
+    </h2>
+    <h3>Graficas: </h3>
+
+    {% for i in imagen1 %}
+    <br>
+    <img src="{{ carpeta }}/{{ i }}" alt="" height="100px" width="200px">
+    <br>
+    {% endfor %} -->
+
+    <div class="container-fluid bg-secondary text-light d-flex justify-content-center mb-3">
+        <img src="./{{so}}.png" alt="" style="max-height: 100px;">
+        <h2 class="display-2 text-center" href="#">Sistema operativo {{so}}</h2>
+    </div>
+
+
+    <div class="container">
+        <h4 class="text-center display-6">Información acerca del agente</h4>
+        <table class="table table-striped table-bordered table-condensed">
+            <tbody>
+                <tr class="">
+                    <td>
+                        <span style="text-align: center;">{{desc}}</span>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <h6>
+                            <strong>Ubicación geográfica</strong>
+                        </h6>
+                        <span>{{ubicacion}}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h6>
+                            <strong>Puerto</strong>
+                        </h6>
+                        <span>{{puerto}}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h6>
+                            <strong>Tiempo de actividad</strong>
+                        </h6>
+                        <span>{{tiempoActividad}}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h6>
+                            <strong>Comunidad</strong>
+                        </h6>
+                        <span>{{comunidad}}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h6>
+                            <strong>IP</strong>
+                        </h6>
+                        <span>
+                            <a href="https://www.api2pdf.com">{{host}}</span>
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+        <hr />
+        <h4>Gráficas</h4>
+
+        <table class="table table-bordered table-condensed">
+            <tbody>
+                {% for i in imagen1%}
+                <tr>
+                    <td class="d-flex flex-column">
+                        <img src="{{carpeta}}/{{i}}" alt="">
+                        <hr />
+                    </td>
+
+                </tr>
+                
+                {% endfor %}
+            </tbody>
+        </table>
+        <hr />
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
