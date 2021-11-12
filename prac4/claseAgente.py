@@ -91,7 +91,7 @@ def obtenerAgentes():
         os.system("clear")
         asignarNumeroDeInterfaces(agentes)
         asignarSO(agentes)
-        asignarTablaAgentes(agentes)
+        #asignarTablaAgentes(agentes)
 
     return agentes
 

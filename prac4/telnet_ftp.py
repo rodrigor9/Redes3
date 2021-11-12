@@ -5,7 +5,7 @@ import telnetlib
 
 def genera_archivo_conf(HOST: str):
 
-    user = input("Ingresa el nombre de usuario: ")
+    user = input(f"Ingresa el nombre de usuario para el host {HOST}: ")
     password = getpass.getpass()
 
     tn = telnetlib.Telnet(HOST)
@@ -24,7 +24,7 @@ def genera_archivo_conf(HOST: str):
     tn.write(b"exit\n")
 
     print(tn.read_all().decode('ascii'))
-    print("\nConfiruacion generada exitosamente")
+    print("\nConfiguracion generada exitosamente")
 
 def cliente_ftp(host: str):
     # Datos

@@ -1,4 +1,5 @@
 from inicio import *
+from telnet_ftp import *
 from rendimiento import *
 from os import system
 from crearPDF import *
@@ -14,7 +15,7 @@ INICIO
 
     *El numero de agentes en monitoreo es {len(agentes)}
 """)
-mostrarAgentes(agentes)
+#mostrarAgentes(agentes)
 
 """ i=0
 for agente in agentes:
@@ -31,7 +32,7 @@ for agente in agentes:
 while True:
     opcion = 0
     opcion = int(input(
-        "Indique la acción que quiere hacer:\n1. Agregar agente\n2. Eliminar agente\n3. Obtener reporte\n4. Mostrar agentes\n5. Monitorizar el rendimiento de los agentes\n6. Facturacion\nPresione cualquier otro para cerrar el programa\n"))
+        "Indique la acción que quiere hacer:\n1. Agregar agente\n2. Eliminar agente\n3. Obtener reporte\n4. Mostrar agentes\n5. Monitorizar el rendimiento de los agentes\n6. Facturacion\n7. Modulo configuracion\nPresione cualquier otro para cerrar el programa\n"))
     if opcion == 1:
         host = input("Indique el nombre del host o ip del dispositivo: ")
         snmp_v = input("Indique la versión de snmp a utilizar:\n1. v1\n2. v2c\n")
@@ -115,6 +116,26 @@ while True:
             dataFactura.append(tiempo_inicial)
             dataFactura.append(tiempo_final)
             generaFactura(agente, dataFactura)
+        exit(0)
+    elif opcion == 7:
+        system("clear")
+        routers = ["30.30.30.1","192.168.1.2"]
+        for agente in agentes:
+            tablaInventario(agente)
+
+        opcion = input("¿Desea usar el protocolo Telnet para guardar los archivos de configuracion? [s/n]")
+        if(opcion == 's'):
+            for host in routers:
+                genera_archivo_conf(host)
+
+        print("""\nSeleccione un router para trabajar:
+        1. RPClive-3 (30.30.30.1)
+        2. RPClive-1 (192.168.1.2)
+        """)
+        opcion = int(input())
+
+        cliente_ftp(routers[opcion-1])
+
         exit(0)
     else:
         print("El programa finalizo")
